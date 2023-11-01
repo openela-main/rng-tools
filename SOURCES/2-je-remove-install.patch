@@ -1,0 +1,33 @@
+diff -up jitterentropy-library/Makefile jitterentropy-library/Makefile
+--- jitterentropy-library/Makefile	2021-07-13 17:23:42.954652287 +0200
++++ jitterentropy-library/Makefile	2021-07-13 17:27:27.958549833 +0200
+@@ -70,29 +70,6 @@ scan: $(analyze_plists)
+ cppcheck:
+ 	cppcheck --force -q --enable=performance --enable=warning --enable=portability *.h *.c
+ 
+-install: install-man install-shared install-includes
+-
+-install-man:
+-	$(INSTALL) -d -m 0755 $(DESTDIR)$(PREFIX)/share/man/man3
+-	$(INSTALL) -m 644 doc/$(NAME).3 $(DESTDIR)$(PREFIX)/share/man/man3/
+-	gzip -n -f -9 $(DESTDIR)$(PREFIX)/share/man/man3/$(NAME).3
+-
+-install-shared:
+-	$(INSTALL) -d -m 0755 $(DESTDIR)$(PREFIX)/$(LIBDIR)
+-	$(INSTALL) -m 0755 lib$(NAME).so.$(LIBVERSION) $(DESTDIR)$(PREFIX)/$(LIBDIR)/
+-	$(RM) $(DESTDIR)$(PREFIX)/$(LIBDIR)/lib$(NAME).so.$(LIBMAJOR)
+-	ln -sf lib$(NAME).so.$(LIBVERSION) $(DESTDIR)$(PREFIX)/$(LIBDIR)/lib$(NAME).so.$(LIBMAJOR)
+-	ln -sf lib$(NAME).so.$(LIBMAJOR) $(DESTDIR)$(PREFIX)/$(LIBDIR)/lib$(NAME).so
+-
+-install-includes:
+-	$(INSTALL) -d -m 0755 $(DESTDIR)$(PREFIX)/$(INCDIR)
+-	$(INSTALL) -m 0644 jitterentropy.h $(DESTDIR)$(PREFIX)/$(INCDIR)/
+-	$(INSTALL) -m 0644 jitterentropy-base-user.h $(DESTDIR)$(PREFIX)/$(INCDIR)/
+-
+-install-static:
+-	$(INSTALL) -d -m 0755 $(DESTDIR)$(PREFIX)/$(LIBDIR)
+-	$(INSTALL) -m 0755 lib$(NAME).a $(DESTDIR)$(PREFIX)/$(LIBDIR)/
+-
+ clean:
+ 	@- $(RM) $(NAME)
+ 	@- $(RM) $(OBJS)
