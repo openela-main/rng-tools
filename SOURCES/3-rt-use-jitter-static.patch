@@ -1,0 +1,59 @@
+diff -up Makefile.am Makefile.am
+--- ./Makefile.am	2021-07-03 22:22:27.000000000 +0200
++++ ./Makefile.am	2021-08-06 12:18:48.498612099 +0200
+@@ -1,7 +1,7 @@
+ ##
+ ## Toplevel Makefile.am for rng-tools
+ ##
+-SUBDIRS		= contrib tests
++SUBDIRS		= contrib tests jitterentropy-library
+ 
+ sbin_PROGRAMS	 = rngd
+ bin_PROGRAMS	 = rngtest
+@@ -23,44 +23,31 @@ if RNDR
+ rngd_SOURCES	+= rngd_rndr.c
+ endif
+ 
+-if JITTER
+ rngd_SOURCES	+= rngd_jitter.c
+-endif
+-
+-if RTLSDR
+-rngd_SOURCES	+= rngd_rtlsdr.c
+-endif
+ 
+ if QRYPT
+ rngd_SOURCES	+= rngd_qrypt.c
+ endif
+ 
+-rngd_LDADD	= librngd.a $(LIBS) $(librtlsdr_LIBS) ${libp11_LIBS} ${libcrypto_LIBS} ${jansson_LIBS} ${libcurl_LIBS} ${libxml2_LIBS} ${openssl_LIBS} ${libcap_LIBS} $(PTHREAD_LIBS)
++rngd_LDADD	= librngd.a $(LIBS) jitterentropy-library/libjitterentropy.a ${libcrypto_LIBS} ${jansson_LIBS} ${libcurl_LIBS} ${libxml2_LIBS} ${openssl_LIBS} ${libcap_LIBS} $(PTHREAD_LIBS)
+ 
+ if DARN
+ rngd_SOURCES	+= rngd_darn.c
+ 
+ # Build Power9-only code with Power9
+ # compile flags in a separate library
+ rngd_LDADD		+= libdarn_impl.a
+ noinst_LIBRARIES	+= libdarn_impl.a
+ libdarn_impl_a_SOURCES	= darn_impl.c
+ libdarn_impl_a_CFLAGS	= -mcpu=power9 -mtune=power9
+ endif
+
+-if PKCS11
+-rngd_SOURCES	+= rngd_pkcs11.c
+-pkcs11_ENGINE = -DDEFAULT_PKCS11_ENGINE=\"$(PKCS11_ENGINE)\"
+-endif
+-
+-rngd_CFLAGS	= ${pkcs11_CFLAGS} $(librtlsdr_CFLAGS) ${pkcs11_ENGINE} ${libp11_CFLAGS} ${libcrypto_CFLAGS} ${libxml2_CFLAGS} ${openssl_CFLAGS} ${libcap_CFLAGS} $(PTHREAD_CFLAGS)
++rngd_CFLAGS	= ${libcrypto_CFLAGS} ${libxml2_CFLAGS} ${openssl_CFLAGS} ${libcap_CFLAGS} $(PTHREAD_CFLAGS) -DHAVE_JITTER -I./jitterentropy-library/
+ rngd_LDFLAGS	= $(PTHREAD_CFLAGS)
+ 
+ rngtest_SOURCES	= exits.h stats.h stats.c rngtest.c
+ rngtest_LDADD	= librngd.a
+ 
+ librngd_a_SOURCES = fips.h fips.c
+ 
+-
+ EXTRA_DIST	= autogen.sh
+-
