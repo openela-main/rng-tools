@@ -2,8 +2,8 @@
 
 Summary:        Random number generator related utilities
 Name:           rng-tools
-Version:        6.15
-Release:        3%{?dist}
+Version:        6.16
+Release:        1%{?dist}
 Group:          System Environment/Base
 License:        GPLv2+
 URL:            https://github.com/nhorman/rng-tools
@@ -20,6 +20,7 @@ BuildRequires: libgcrypt-devel libcurl-devel
 BuildRequires: libxml2-devel openssl-devel
 BuildRequires: jansson-devel
 BuildRequires: libcap-devel
+Suggests: opensc
 
 Requires(post): systemd
 Requires(preun): systemd
@@ -48,6 +49,12 @@ mv jitterentropy-library-3.4.1 jitterentropy-library
 
 %build
 ./autogen.sh
+# a dirty hack to force PIC for a PIC-aware assembly code for i686
+# /usr/lib/rpm/redhat/redhat-hardened-cc1 in Koji/Brew does not
+# force PIC for assembly sources as of now
+%ifarch i386 i686
+sed -i -e '/^#define RDRAND_RETRY_LIMIT\t10/a#define __PIC__ 1' rdrand_asm.S
+%endif
 # a dirty hack so libdarn_impl_a_CFLAGS overrides common CFLAGS
 sed -i -e 's/$(libdarn_impl_a_CFLAGS) $(CFLAGS)/$(CFLAGS) $(libdarn_impl_a_CFLAGS)/' Makefile.in
 %configure --without-pkcs11 --without-rtlsdr
@@ -82,6 +89,11 @@ install -D %{SOURCE2} -m0644 %{buildroot}%{_sysconfdir}/sysconfig/rngd
 %config(noreplace) %attr(0644,root,root)    %{_sysconfdir}/sysconfig/rngd
 
 %changelog
+* Thu Mar 02 2023 Vladis Dronov <vdronov@redhat.com> - 6.16-1
+- Update rng-tools to v6.16 @ 0e560296 (bz 2174908)
+- Get rid of text relocations in -fPIE build
+- Add a hint for opensc package (bz 1845854)
+
 * Tue Dec 27 2022 Vladis Dronov <vdronov@redhat.com> - 6.15-3
 - Update rng-tools to v6.15 @ cb8cc624 (bz 2141379)
 - Update jitterentropy library to v3.4.1 @ 7bf9f85d
