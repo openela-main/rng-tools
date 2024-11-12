@@ -12,8 +12,8 @@
 Summary:        Random number generator related utilities
 Name:           rng-tools
 Version:        6.16
-Release:        1%{?dist}
-License:        GPLv2+
+Release:        7%{?dist}
+License:        GPL-2.0-or-later
 URL:            https://github.com/nhorman/rng-tools
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:        rngd.service
@@ -104,6 +104,10 @@ install -D %{SOURCE2} -m0644 %{buildroot}%{_sysconfdir}/sysconfig/rngd
 %config(noreplace) %attr(0644,root,root)    %{_sysconfdir}/sysconfig/rngd
 
 %changelog
+* Sat Mar 30 2024 Vladis Dronov <vdronov@redhat.com> - 6.16-7
+- Update to the upstream v6.16 + tip of origin/master @ 98cf8d63 (RHEL-30953)
+- Fix a test failure
+
 * Thu Mar 02 2023 Vladis Dronov <vdronov@redhat.com> - 6.16-1
 - Update to the upstream v6.16 + tip of origin/master @ 0e560296 (bz 2174916)
 - Get rid of text relocations in -fPIE build

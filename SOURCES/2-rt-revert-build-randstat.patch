@@ -8,30 +8,9 @@ This reverts commit 2ce93190cb0111fcab2f622a539689d70960643a.
 
 Signed-off-by: Vladis Dronov <vdronov@redhat.com>
 ---
- .gitignore          | 3 +--
  contrib/Makefile.am | 5 +++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git .gitignore .gitignore
-index 943fa2b..5dc334d 100644
---- .gitignore
-+++ .gitignore
-@@ -1,6 +1,6 @@
- *.a
- *.o
--.deps/
-+/.deps/
- /aclocal.m4
- /ar-lib
- /autom4te.cache/
-@@ -10,7 +10,6 @@
- /config.status
- /config.sub
- /configure
--/contrib/randstat
- /depcomp
- /install-sh
- /missing
 diff --git contrib/Makefile.am contrib/Makefile.am
 index a81fb0e..18c4fbc 100644
 --- contrib/Makefile.am
