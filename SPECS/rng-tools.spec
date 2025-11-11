@@ -12,7 +12,7 @@
 Summary:        Random number generator related utilities
 Name:           rng-tools
 Version:        6.17
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPL-2.0-or-later
 URL:            https://github.com/nhorman/rng-tools
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -104,6 +104,9 @@ install -D %{SOURCE2} -m0644 %{buildroot}%{_sysconfdir}/sysconfig/rngd
 %config(noreplace) %attr(0644,root,root)    %{_sysconfdir}/sysconfig/rngd
 
 %changelog
+* Thu Jun 26 2025 Vladis Dronov <vdronov@redhat.com> - 6.17-5
+- Disable jitter entropy source by default (RHEL-91113)
+
 * Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 6.17-4
 - Bump release for October 2024 mass rebuild:
   Resolves: RHEL-64018
