@@ -3,7 +3,7 @@
 Summary:        Random number generator related utilities
 Name:           rng-tools
 Version:        6.16
-Release:        1%{?dist}
+Release:        2%{?dist}
 Group:          System Environment/Base
 License:        GPLv2+
 URL:            https://github.com/nhorman/rng-tools
@@ -75,6 +75,13 @@ install -D %{SOURCE2} -m0644 %{buildroot}%{_sysconfdir}/sysconfig/rngd
 %systemd_preun rngd.service
 
 %postun
+# rngd.service on RHEL-9 changed to multi-user target so we need to update
+# the symlink by re-enabling the service for cases where a LEAPP upgrade is
+# executed from RHEL-8 to 9.
+if [ $1 -ge 1 ] ; then
+    # Package upgrade, not uninstall
+    systemctl reenable rngd.service >/dev/null 2>&1
+fi
 %systemd_postun_with_restart rngd.service
 
 %files
@@ -89,6 +96,9 @@ install -D %{SOURCE2} -m0644 %{buildroot}%{_sysconfdir}/sysconfig/rngd
 %config(noreplace) %attr(0644,root,root)    %{_sysconfdir}/sysconfig/rngd
 
 %changelog
+* Thu Mar 26 2026 Bruno Meneguele <bmeneg@redhat.com> - 6.16-2
+- Fix systemd unit symlink for LEAPP upgrades (RHEL-161093)
+
 * Thu Mar 02 2023 Vladis Dronov <vdronov@redhat.com> - 6.16-1
 - Update rng-tools to v6.16 @ 0e560296 (bz 2174908)
 - Get rid of text relocations in -fPIE build
